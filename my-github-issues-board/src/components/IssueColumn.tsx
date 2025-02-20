@@ -14,31 +14,23 @@ interface IssueColumnProps {
 
 const IssueColumn: React.FC<IssueColumnProps> = ({ columnId, title, issues }) => {
   return (
-    <div style={{ margin: '0 8px', flex: 1 }}>
-      <Title level={4}>{title}</Title>
+    <div className="column">
+      <Title level={4} className="column-title">{title}</Title>
       <Droppable droppableId={columnId}>
         {(provided) => (
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            style={{
-              minHeight: '500px',
-              background: '#f0f2f5',
-              padding: '8px',
-              borderRadius: '4px',
-            }}
+            className="column-droppable"
           >
             {issues.map((issue, index) => (
               <Draggable key={issue.id.toString()} draggableId={issue.id.toString()} index={index}>
-                {(provided) => (
+                {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    style={{
-                      marginBottom: '8px',
-                      ...provided.draggableProps.style,
-                    }}
+                    className={`draggable-item ${snapshot.isDragging ? 'dragging' : ''}`}
                   >
                     <IssueCard issue={issue} />
                   </div>

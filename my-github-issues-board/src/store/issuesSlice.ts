@@ -1,10 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { IIssue } from '../types';
-import { fetchIssuesFromGitHub } from '../services/githubService';
+import { fetchIssuesFromGitHub, fetchRepoInfo } from '../services/githubService';
 
-interface Repo {
+export interface Repo {
   owner: string;
   name: string;
+}
+
+export interface RepoDetails {
+  stargazers_count: number;
+  full_name: string;
 }
 
 interface BoardState {
@@ -17,10 +22,11 @@ interface IssuesState {
   board: BoardState;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
+
+  repoDetails: RepoDetails | null;
 }
 
 const LOCAL_STORAGE_KEY = 'issuesBoardState';
-
 
 const loadPersistedState = (): BoardState | null => {
   const state = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -44,6 +50,7 @@ const initialState: IssuesState = {
   },
   status: 'idle',
   error: null,
+  repoDetails: null,
 };
 
 export const fetchIssues = createAsyncThunk(
@@ -51,6 +58,14 @@ export const fetchIssues = createAsyncThunk(
   async ({ owner, repo }: { owner: string; repo: string }) => {
     const issues = await fetchIssuesFromGitHub(owner, repo);
     return { issues, repo: { owner, name: repo } };
+  }
+);
+
+export const fetchRepoDetails = createAsyncThunk(
+  'issues/fetchRepoDetails',
+  async ({ owner, repo }: { owner: string; repo: string }) => {
+    const info = await fetchRepoInfo(owner, repo);
+    return info;
   }
 );
 
@@ -82,14 +97,15 @@ const issuesSlice = createSlice({
       state.status = 'succeeded';
       state.issues = action.payload.issues;
       state.repo = action.payload.repo;
+
       const persisted = loadPersistedState();
       if (persisted) {
         state.board = persisted;
       } else {
-        // Ініціалізація колонок на основі стану issue
         const todo: string[] = [];
         const inProgress: string[] = [];
         const done: string[] = [];
+
         action.payload.issues.forEach((issue) => {
           if (issue.state === 'closed') {
             done.push(issue.id.toString());
@@ -101,6 +117,7 @@ const issuesSlice = createSlice({
             }
           }
         });
+
         state.board = { todo, inProgress, done };
         saveState(state.board);
       }
@@ -108,6 +125,16 @@ const issuesSlice = createSlice({
     builder.addCase(fetchIssues.rejected, (state, action) => {
       state.status = 'failed';
       state.error = action.error.message || 'Помилка завантаження';
+    });
+
+    builder.addCase(fetchRepoDetails.fulfilled, (state, action) => {
+      state.repoDetails = {
+        stargazers_count: action.payload.stargazers_count,
+        full_name: action.payload.full_name,
+      };
+    });
+    builder.addCase(fetchRepoDetails.rejected, (state) => {
+      state.repoDetails = null;
     });
   },
 });

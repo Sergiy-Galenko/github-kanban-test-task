@@ -1,38 +1,94 @@
-.App {
-  text-align: center;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #f0f2f5;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.header-container {
+  background-color: #001529;
+  padding: 16px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.topbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.input-bar {
+  background: #fff;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.repo-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.repo-links {
+  margin-left: 20px;
+}
+
+.board-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.column {
+  flex: 1;
+  background: #e8e8e8; 
+  padding: 16px;
+  border-radius: 8px;
+  min-height: 500px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: background 0.2s ease;
+}
+
+.column-title {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.column-droppable {
+  min-height: 450px;
+}
+
+.draggable-item {
+  margin-bottom: 8px;
+  transition: background 0.2s ease;
+}
+.dragging {
+  background: #d6f5ff;
+}
+
+.issue-card {
+  margin-bottom: 12px;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+  padding: 8px;
+}
+
+.issue-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.issue-meta {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 4px;
+}
+.issue-info {
+  font-size: 12px;
+  color: #444;
+}
+
+.topbar-container .anticon-star {
+  font-size: 18px;
 }

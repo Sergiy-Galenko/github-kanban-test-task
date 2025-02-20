@@ -37,7 +37,7 @@ const DragDropContextWrapper: React.FC = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div className="board-container">
         <IssueColumn
           columnId="todo"
           title="ToDo"

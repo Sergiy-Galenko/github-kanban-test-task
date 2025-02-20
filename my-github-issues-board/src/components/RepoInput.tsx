@@ -23,20 +23,20 @@ const RepoInput: React.FC<RepoInputProps> = ({ onLoadRepo, repo }) => {
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div className="repo-input-container">
       <Space>
         <Input
-          placeholder="Введіть URL репозиторію (наприклад, https://github.com/facebook/react)"
+          placeholder="Enter repo URL (e.g. https://github.com/facebook/react)"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           style={{ width: 400 }}
         />
         <Button type="primary" onClick={handleLoad}>
-          Load
+          Load issues
         </Button>
       </Space>
       {repo && (
-        <div style={{ marginLeft: '20px' }}>
+        <div className="repo-links">
           <Space direction="vertical">
             <Link href={`https://github.com/${repo.owner}`} target="_blank">
               Профіль власника

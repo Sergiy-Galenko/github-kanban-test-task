@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Layout, message } from 'antd';
 import RepoInput from './components/RepoInput';
 import DragDropContextWrapper from './components/DragDropContextWrapper';
+import TopBar from './components/TopBar';
 import { useAppDispatch, useAppSelector } from './store/hooks';
-import { fetchIssues, selectRepoIssues } from './store/issuesSlice';
+import { fetchIssues, selectRepoIssues, fetchRepoDetails } from './store/issuesSlice';
 
 const { Header, Content } = Layout;
 
 const App: React.FC = () => {
   const [repoUrl, setRepoUrl] = useState<string>('');
   const dispatch = useAppDispatch();
-  const { issues, status, repo } = useAppSelector(selectRepoIssues);
+  const { issues, status, repo, repoDetails } = useAppSelector(selectRepoIssues);
 
   useEffect(() => {
     if (repoUrl) {
@@ -19,8 +20,13 @@ const App: React.FC = () => {
       if (match) {
         const owner = match[1];
         const repoName = match[2];
+        // Завантажуємо issues
         dispatch(fetchIssues({ owner, repo: repoName }))
           .unwrap()
+          .then(() => {
+            // Завантажуємо додаткові дані про репозиторій (зірки, повна назва)
+            dispatch(fetchRepoDetails({ owner, repo: repoName }));
+          })
           .catch(() => {
             message.error('Не вдалося завантажити issues');
           });
@@ -32,9 +38,16 @@ const App: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ background: '#fff', padding: '10px' }}>
-        <RepoInput onLoadRepo={(url) => setRepoUrl(url)} repo={repo} />
+      {/* Верхня панель з назвою репо та кількістю зірок */}
+      <Header className="header-container">
+        <TopBar repo={repo} repoDetails={repoDetails} />
       </Header>
+
+      {/* Панель для введення URL */}
+      <div className="input-bar">
+        <RepoInput onLoadRepo={(url) => setRepoUrl(url)} repo={repo} />
+      </div>
+
       <Content style={{ padding: '20px' }}>
         {status === 'loading' && <div>Завантаження...</div>}
         {status === 'succeeded' && issues.length > 0 && (
