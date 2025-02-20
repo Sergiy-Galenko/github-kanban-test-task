@@ -92,3 +92,16 @@ body {
 .topbar-container .anticon-star {
   font-size: 18px;
 }
+.load-issues-button {
+  background-color: #f57c00 !important;
+  border-color: #f57c00 !important;
+  color: #fff !important;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.load-issues-button:hover {
+  background-color: #fb8c00 !important;
+  border-color: #fb8c00 !important;
+}
+
